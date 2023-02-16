@@ -8,6 +8,13 @@ const app = express() // instantiate an Express object
 app.use(morgan('dev', { skip: (req, res) => process.env.NODE_ENV === 'test' })) // log all incoming requests, except when in unit test mode.  morgan has a few logging default styles - dev is a nice concise color-coded style
 app.use(cors()) // allow cross-origin resource sharing
 
+const aboutData = {
+  "p1": "Hey! I'm Kai Elwood-Dieu, a current senior at NYU Shanghai studying Interactive Media and Business with minors in Computer Science and Chinese. I'm interested in climate technology and data visualization; I look forward to bringing those my tech talents to the fight against climate change once I've graduated.",
+  "p2": "I love to dance, rock climb, and be outside. I also love to make music, and I play the guitar and the trumpet. I'm still learning how to play the guitar :). Thanks for reading!",
+  "img": "https://avatars.githubusercontent.com/u/49706078?v=4"
+}
+
+
 // use express's builtin body-parser middleware to parse any data included in a request
 app.use(express.json()) // decode JSON-formatted incoming POST data
 app.use(express.urlencoded({ extended: true })) // decode url-encoded incoming POST data
@@ -31,6 +38,19 @@ app.get('/messages', async (req, res) => {
       messages: messages,
       status: 'all good',
     })
+  } catch (err) {
+    console.error(err)
+    res.status(400).json({
+      error: err,
+      status: 'failed to retrieve messages from the database',
+    })
+  }
+})
+
+// a route to handle fetching about data
+app.get('/about', async (req, res) => {
+  try {
+    res.json(aboutData)
   } catch (err) {
     console.error(err)
     res.status(400).json({
